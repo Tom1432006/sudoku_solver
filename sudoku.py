@@ -11,9 +11,6 @@ class Digit:
     def set_val(self, val):
         self.value = val
 
-    def compare(self, val):
-        return self.value == val
-
 class Box:
     digits = [] # a box contains 9 digits
     index = 0
