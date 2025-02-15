@@ -1,11 +1,9 @@
 class Digit:
-    box = 0
     row = 0
     column = 0
     value = 0
 
-    def __init__(self, box, row, column, value):
-        self.box = box
+    def __init__(self, row, column, value):
         self.row = row
         self.column = column
         self.value = value
@@ -32,12 +30,8 @@ class Box:
 
         return False
     
-    def from_digits(self, digits):
-        for i in range(len(digits)):
-            self.digits[int(i / 3)][i % 3] = digits[i]
-    
     def insert_digit(self, digit, r, c):
-        self.digits[r % 3][c % 3] = Digit(self.index, r, c, digit)
+        self.digits[r % 3][c % 3] = Digit(r, c, digit)
     
     def update_digit(self, digit, r, c):
         self.digits[r % 3][c % 3].set_val(digit)
@@ -61,10 +55,11 @@ class Box:
                     return False
         return True
     
-    def get_digits(self, ignore_null):
+    def get_digits(self, ignore_null=False):
         for r in self.digits:
             for c in r:
                 if c.value != 0 and ignore_null: yield c
+                elif not ignore_null: yield c
     
     def get_digit(self, row, col):
         return self.digits[row][col].value
