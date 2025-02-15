@@ -35,9 +35,8 @@ class Solver:
 
             self.sudoku.update_digit(curr+1, i)
 
-            if False:
-                os.system('clear')
-                self.sudoku.print_field()
+            # os.system('clear')
+            # self.sudoku.print_field()
 
             if self.sudoku.check() == True and curr < 9:
                 i += 1
@@ -46,4 +45,3 @@ class Solver:
                 self.sudoku.update_digit(0, i)
                 i -= 1
                 move_back = True
-            

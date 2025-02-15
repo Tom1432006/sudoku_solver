@@ -61,10 +61,10 @@ class Box:
                     return False
         return True
     
-    def get_digits(self):
+    def get_digits(self, ignore_null):
         for r in self.digits:
             for c in r:
-                yield c
+                if c.value != 0 and ignore_null: yield c
     
     def get_digit(self, row, col):
         return self.digits[row][col].value
@@ -82,7 +82,7 @@ class Sudoku:
         for i in range(len(digits)):
             # get the field box, the digit belongs to
             r = int(i / 9)
-            c = int(i % 9)
+            c = i % 9
 
             box_no = int(r / 3) * 3 + int(c / 3)
 
@@ -111,39 +111,40 @@ class Sudoku:
         for box in self.field:
             if box.check() == False: return False
 
-        #check every row and column
-
-        # save all the previously contained digits, to check if digits are repeating
-        contains_row = [[] for _ in range(9)]
-        contains_column = [[] for _ in range(9)]
 
         # check every row and column. i is for both at the same time
         for i in range(9):
-            for box in self.field: # check every box
-                for digit in box.get_digits():
-                    if digit.value == 0: continue
-
-                    # if the box hast digits in the row i
-                    if digit.row == i:
-                        # check if the digits has already occured in the row 
-                        if digit.value not in contains_row[i]:
-                            contains_row[i].append(digit.value)
-                        else:
-                            return False
-                    
-                    # if the box has digits in the column i
-                    if digit.column == i:
-                        # check if the digits has already occured in the column
-                        if digit.value not in contains_column[i]:
-                            contains_column[i].append(digit.value)
-                        else:
-                            return False
+            if self.check_row_and_column(i) == False: return False
                         
+        return True
+    
+    def check_row_and_column(self, i):
+        # save all the previously contained digits, to check if digits are repeating
+        contains_row = []
+        contains_col = []
+        for box in self.field: # check every box
+            for digit in box.get_digits(ignore_null=True):
+                # if the box hast digits in the row i
+                if digit.row == i:
+                    # check if the digits has already occured in the row 
+                    if digit.value not in contains_row:
+                        contains_row.append(digit.value)
+                    else:
+                        return False
+                
+                # if the box has digits in the column i
+                if digit.column == i:
+                    # check if the digits has already occured in the column
+                    if digit.value not in contains_col:
+                        contains_col.append(digit.value)
+                    else:
+                        return False
+            
         return True
     
     def insert_digit(self, digit, index):
         row = int(index / 9)
-        col = int(index % 9)
+        col = index % 9
 
         box_no = int(row / 3) * 3 + int(col / 3)
 
@@ -151,7 +152,7 @@ class Sudoku:
     
     def update_digit(self, digit, index):
         row = int(index / 9)
-        col = int(index % 9)
+        col = index % 9
 
         box_no = int(row / 3) * 3 + int(col / 3)
 
@@ -159,9 +160,8 @@ class Sudoku:
     
     def get_digit(self, index):
         row = int(index / 9)
-        col = int(index % 9)
+        col = index % 9
 
         box_no = int(row / 3) * 3 + int(col / 3)
 
         return self.field[box_no].get_digit(row % 3, col % 3)
-
