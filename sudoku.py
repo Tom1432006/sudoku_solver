@@ -24,12 +24,6 @@ class Box:
         if digits != []:
             self.digits = digits
     
-    def has_digit(self, val):
-        for digit in self.digits:
-            if digit.compare(val): return True
-
-        return False
-    
     def insert_digit(self, digit, r, c):
         self.digits[r % 3][c % 3] = Digit(r, c, digit)
     
